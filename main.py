@@ -2,7 +2,7 @@ import random, time, pandas as pd, os
 from atletas import Athlete, athletes_list
 from tabulate import tabulate
 
-def clean_screen(): # o nome é auto explicativo
+def clean_screen(): # the name is self-explanatory
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def show_scoreboard(games: dict, j1: Athlete, j2: Athlete):
