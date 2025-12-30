@@ -10,7 +10,7 @@ def choice(option_list):
         else:
             return option
 
-def clean_screen(text): # the name is self-explanatory
+def clean_screen(text=None): # the name is self-explanatory
     os.system("cls" if os.name == "nt" else "clear")
     if text:
         print(text)
@@ -139,6 +139,7 @@ def match_simulation(j1, j2):
     return j1.name if game_j1 > game_j2 else j2.name
 
 def menu():
+    clean_screen()
     print("""---- TABLE TENNIS SIMULATOR ----
 [1] Sim match
 """)
