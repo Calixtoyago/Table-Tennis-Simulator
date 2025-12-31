@@ -139,28 +139,36 @@ def match_simulation(j1, j2):
     return j1.name if game_j1 > game_j2 else j2.name
 
 def menu():
-    clean_screen()
-    print("""---- TABLE TENNIS SIMULATOR ----
-[1] Sim match
-""")
-    option = choice(("1"))
+    while True:
+        clean_screen()
+        print("""---- TABLE TENNIS SIMULATOR ----
+    [1] Sim match
+    """)
+        option = choice(("1"))
 
-    if option == "1":
-        clean_screen("---- Choose your players ----")
+        match option:
+            case "1":
+                clean_screen("---- Choose your players ----")
 
-        for athlete in athletes_list:
-            print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
+                for athlete in athletes_list:
+                    print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
 
-        len_athletes = len(athletes_list)
-        indexes = list(str(i) for i in range(len_athletes))
-        j1 = choice(indexes)
-        indexes.remove(j1)
-        j2 = choice(indexes)
+                len_athletes = len(athletes_list)
+                indexes = list(str(i) for i in range(len_athletes))
+                j1 = choice(indexes)
+                indexes.remove(j1) # removes the selected athlete from the list
+                j2 = choice(indexes)
 
-        j1, j2 = int(j1), int(j2)
-        j1 = athletes_list[j1]
-        j2 = athletes_list[j2]
+                j1, j2 = int(j1), int(j2)
+                j1 = athletes_list[j1]
+                j2 = athletes_list[j2]
 
-        match_simulation(j1, j2)
+                # the match allways starts and after that the user will be asked for a rematch
+                while True: 
+                    match_simulation(j1, j2)
+                    option = choice(("y","n"), "Rematch: (y/n) ")
+                    if option == "n":
+                        break
+
 
 menu()
