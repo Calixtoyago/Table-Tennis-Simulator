@@ -2,14 +2,25 @@ import random, time, pandas as pd, os
 from athletes import Athlete, athletes_list
 from tabulate import tabulate
 
-def choice(option_list):
+def choice(option_list, text="Your choice: "):
+    """
+    Prompt the user to select an option from a given list.
+
+    :param option_list (list): A list of valid options.
+    :param (str, optional): The prompt message displayed to the user. Default is "Your choice: ".
+
+    Returns:
+    - str: The option chosen by the user (always valid).
+    
+    The function keeps asking until the user enters a valid option.
+    """
     while True:
-        option = input("Your choice: ").lower().strip()
+        option = input(text).lower().strip()
         if option not in (option_list):
-            print("Selecione uma opção válida!")
+            print("Invalid! Choose again!!")
         else:
             return option
-
+        
 def clean_screen(text=None): # the name is self-explanatory
     os.system("cls" if os.name == "nt" else "clear")
     if text:
@@ -22,7 +33,7 @@ def show_scoreboard(games: dict, j1: Athlete, j2: Athlete):
         j1.name: [],
         j2.name: []
     }
-    columns = ["Sets"]
+    columns = ["Games"]
     for game in games.items():
         sets, points = game
         scoreboard[j1.name].append(points[0])
@@ -75,12 +86,14 @@ def match_simulation(j1, j2):
     RANDOM_VARIATION = 8
     BASE_ERROR = 0.05
 
+    MATCH_SPEED = 0.5
+
     while game_j1 < 3 and game_j2 < 3:
         deuce = False
         while True:
             games[game] = (points_j1, points_j2)
             show_scoreboard(games, j1, j2)
-            time.sleep(0.4)
+            time.sleep(MATCH_SPEED)
 
             error_chance = (10 - to_serve.serve) / 10
             ace_chance = (to_serve.serve / (to_serve.serve + to_receive.defense)) * 0.15
