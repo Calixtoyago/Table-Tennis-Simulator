@@ -2,26 +2,15 @@ import random, time, pandas as pd, os
 from athletes import Athlete, athletes_list
 from tabulate import tabulate
 
-def choice(option_list, text="Your choice: "):
-    """
-    Prompt the user to select an option from a given list.
-
-    :param option_list (list): A list of valid options.
-    :param (str, optional): The prompt message displayed to the user. Default is "Your choice: ".
-
-    Returns:
-    - str: The option chosen by the user (always valid).
-    
-    The function keeps asking until the user enters a valid option.
-    """
+def choice(option_list):
     while True:
-        option = input(text).lower().strip()
+        option = input("Your choice: ").lower().strip()
         if option not in (option_list):
-            print("Invalid! Choose again!!")
+            print("Selecione uma opção válida!")
         else:
             return option
-        
-def clean_screen(text=None): # the name is self-explanatory
+
+def clean_screen(text): # the name is self-explanatory
     os.system("cls" if os.name == "nt" else "clear")
     if text:
         print(text)
@@ -33,7 +22,7 @@ def show_scoreboard(games: dict, j1: Athlete, j2: Athlete):
         j1.name: [],
         j2.name: []
     }
-    columns = ["Games"]
+    columns = ["Sets"]
     for game in games.items():
         sets, points = game
         scoreboard[j1.name].append(points[0])
@@ -86,14 +75,12 @@ def match_simulation(j1, j2):
     RANDOM_VARIATION = 8
     BASE_ERROR = 0.05
 
-    MATCH_SPEED = 0.5
-
     while game_j1 < 3 and game_j2 < 3:
         deuce = False
         while True:
             games[game] = (points_j1, points_j2)
             show_scoreboard(games, j1, j2)
-            time.sleep(MATCH_SPEED)
+            time.sleep(0.4)
 
             error_chance = (10 - to_serve.serve) / 10
             ace_chance = (to_serve.serve / (to_serve.serve + to_receive.defense)) * 0.15
@@ -152,36 +139,27 @@ def match_simulation(j1, j2):
     return j1.name if game_j1 > game_j2 else j2.name
 
 def menu():
-    while True:
-        clean_screen()
-        print("""---- TABLE TENNIS SIMULATOR ----
-    [1] Sim match
-    """)
-        option = choice(("1"))
+    print("""---- TABLE TENNIS SIMULATOR ----
+[1] Sim match
+""")
+    option = choice(("1"))
 
-        match option:
-            case "1":
-                clean_screen("---- Choose your players ----")
+    if option == "1":
+        clean_screen("---- Choose your players ----")
 
-                for athlete in athletes_list:
-                    print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
+        for athlete in athletes_list:
+            print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
 
-                len_athletes = len(athletes_list)
-                indexes = list(str(i) for i in range(len_athletes))
-                j1 = choice(indexes)
-                indexes.remove(j1) # removes the selected athlete from the list
-                j2 = choice(indexes)
+        len_athletes = len(athletes_list)
+        indexes = list(str(i) for i in range(len_athletes))
+        j1 = choice(indexes)
+        indexes.remove(j1)
+        j2 = choice(indexes)
 
-                j1, j2 = int(j1), int(j2)
-                j1 = athletes_list[j1]
-                j2 = athletes_list[j2]
+        j1, j2 = int(j1), int(j2)
+        j1 = athletes_list[j1]
+        j2 = athletes_list[j2]
 
-                # the match allways starts and after that the user will be asked for a rematch
-                while True: 
-                    match_simulation(j1, j2)
-                    option = choice(("y","n"), "Rematch: (y/n) ")
-                    if option == "n":
-                        break
-
+        match_simulation(j1, j2)
 
 menu()
