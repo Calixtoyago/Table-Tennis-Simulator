@@ -23,3 +23,14 @@ def create_athlete(name, attack, defense, serve):
     conn.close()
 
     return get_all_athletes()
+
+def delete_athlete(name):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM athletes WHERE name = ?", (name,))
+
+    conn.commit()
+    conn.close()
+
+    return get_all_athletes()

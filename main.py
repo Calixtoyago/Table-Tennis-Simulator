@@ -3,9 +3,10 @@ import time
 import pandas as pd
 import os
 import db # __init__.py --> get_connection, init_db
+import repository as rep # __init__.py --> get_all_athletes, create_athlete, delete_athlete
 from athletes import Athlete
 from tabulate import tabulate
-from repository.athletes_repository import get_all_athletes, create_athlete
+# from repository.athletes_repository import get_all_athletes, create_athlete, delete_athlete
 
 def choice(option_list, text="Your choice: "):
     """
@@ -157,14 +158,15 @@ def match_simulation(j1, j2):
     return j1.name if game_j1 > game_j2 else j2.name
 
 def menu():
-    athletes_list = get_all_athletes()
+    athletes_list = rep.get_all_athletes()
     while True:
         clean_screen()
         print("""---- TABLE TENNIS SIMULATOR ----
     [1] Sim match
     [2] Create athlete
+    [3] Delete athlete
     """)
-        option = choice(("1", "2"))
+        option = choice(("1", "2", "3"))
 
         match option:
             case "1":
@@ -206,12 +208,28 @@ def menu():
                 serve = choice(options, "Serve: (1-20) ")
                 serve = int(serve)
 
-                athletes_list = create_athlete(name, attack, defense, serve)
+                athletes_list = rep.create_athlete(name, attack, defense, serve)
                 
                 print("Athlete created, good luck!")
 
                 enter = input("Press Enter: ")
-                
+            case "3":
+                clean_screen("---- Delete an athlete ----")
+
+                for athlete in athletes_list:
+                    print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
+
+                len_athletes = len(athletes_list)
+                indexes = list(str(i) for i in range(len_athletes))
+
+                to_delete = choice(indexes, "Athlete's index: ")
+                to_delete = int(to_delete)
+                athlete_name = athletes_list[to_delete].name
+                athletes_list = rep.delete_athlete(athlete_name)
+
+                print("Athlete deleted, good luck!")
+
+                enter = input("Press Enter: ")
 
 db.init_db() # starts the database if it not exists
 menu()
