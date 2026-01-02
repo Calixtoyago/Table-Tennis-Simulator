@@ -4,36 +4,12 @@ import pandas as pd
 import os
 import db # __init__.py --> get_connection, init_db
 import repository as rep # __init__.py --> get_all_athletes, create_athlete, delete_athlete
+import utils # __init__.py --> utils.choice, cleen_screen
 from athletes import Athlete
 from tabulate import tabulate
-# from repository.athletes_repository import get_all_athletes, create_athlete, delete_athlete
-
-def choice(option_list, text="Your choice: "):
-    """
-    Prompt the user to select an option from a given list.
-
-    :param option_list (list): A list of valid options.
-    :param (str, optional): The prompt message displayed to the user. Default is "Your choice: ".
-
-    Returns:
-    - str: The option chosen by the user (always valid).
-    
-    The function keeps asking until the user enters a valid option.
-    """
-    while True:
-        option = input(text).lower().strip()
-        if option not in (option_list):
-            print("Invalid! Choose again!!")
-        else:
-            return option
-        
-def clean_screen(text=None): # the name is self-explanatory
-    os.system("cls" if os.name == "nt" else "clear")
-    if text:
-        print(text)
 
 def show_scoreboard(games: dict, j1: Athlete, j2: Athlete):
-    clean_screen("---- TABLE TENNIS SIMULATOR ----")
+    utils.clean_screen("---- TABLE TENNIS SIMULATOR ----")
 
     scoreboard = {
         j1.name: [],
@@ -160,17 +136,17 @@ def match_simulation(j1, j2):
 def menu():
     athletes_list = rep.get_all_athletes()
     while True:
-        clean_screen()
+        utils.clean_screen()
         print("""---- TABLE TENNIS SIMULATOR ----
     [1] Sim match
     [2] Create athlete
     [3] Delete athlete
     """)
-        option = choice(("1", "2", "3"))
+        option = utils.choice(("1", "2", "3"))
 
         match option:
             case "1":
-                clean_screen("---- Choose your players ----")
+                utils.clean_screen("---- Choose your players ----")
 
                 for athlete in athletes_list:
                     print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
@@ -179,9 +155,9 @@ def menu():
 
                 len_athletes = len(athletes_list)
                 indexes = list(str(i) for i in range(len_athletes))
-                j1 = choice(indexes)
+                j1 = utils.choice(indexes)
                 indexes.remove(j1) # removes the selected athlete from the list
-                j2 = choice(indexes)
+                j2 = utils.choice(indexes)
 
                 j1, j2 = int(j1), int(j2)
                 j1 = athletes_list[j1]
@@ -190,22 +166,22 @@ def menu():
                 # the match allways starts and after that the user will be asked for a rematch
                 while True: 
                     match_simulation(j1, j2)
-                    option = choice(("y","n"), "Rematch: (y/n) ")
+                    option = utils.choice(("y","n"), "Rematch: (y/n) ")
                     if option == "n":
                         break
             case "2":
-                clean_screen("---- Create your athlete ----")
+                utils.clean_screen("---- Create your athlete ----")
                 options = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
                 name = input("Name: ")
 
-                attack = choice(options, "Attack: (1-20) ")
+                attack = utils.choice(options, "Attack: (1-20) ")
                 attack = int(attack)
 
-                defense = choice(options, "Defense: (1-20) ")
+                defense = utils.choice(options, "Defense: (1-20) ")
                 defense = int(defense)
 
-                serve = choice(options, "Serve: (1-20) ")
+                serve = utils.choice(options, "Serve: (1-20) ")
                 serve = int(serve)
 
                 athletes_list = rep.create_athlete(name, attack, defense, serve)
@@ -214,7 +190,7 @@ def menu():
 
                 enter = input("Press Enter: ")
             case "3":
-                clean_screen("---- Delete an athlete ----")
+                utils.clean_screen("---- Delete an athlete ----")
 
                 for athlete in athletes_list:
                     print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
@@ -222,7 +198,7 @@ def menu():
                 len_athletes = len(athletes_list)
                 indexes = list(str(i) for i in range(len_athletes))
 
-                to_delete = choice(indexes, "Athlete's index: ")
+                to_delete = utils.choice(indexes, "Athlete's index: ")
                 to_delete = int(to_delete)
                 athlete_name = athletes_list[to_delete].name
                 athletes_list = rep.delete_athlete(athlete_name)
