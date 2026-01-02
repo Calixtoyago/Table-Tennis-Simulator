@@ -1,6 +1,11 @@
-import random, time, pandas as pd, os
-from athletes import Athlete, athletes_list
+import random
+import time
+import pandas as pd
+import os
+import db # __init__.py --> get_connection, init_db
+from athletes import Athlete
 from tabulate import tabulate
+from repository.athletes_repository import get_all_athletes, create_athlete
 
 def choice(option_list, text="Your choice: "):
     """
@@ -152,12 +157,14 @@ def match_simulation(j1, j2):
     return j1.name if game_j1 > game_j2 else j2.name
 
 def menu():
+    athletes_list = get_all_athletes()
     while True:
         clean_screen()
         print("""---- TABLE TENNIS SIMULATOR ----
     [1] Sim match
+    [2] Create athlete
     """)
-        option = choice(("1"))
+        option = choice(("1", "2"))
 
         match option:
             case "1":
@@ -165,6 +172,8 @@ def menu():
 
                 for athlete in athletes_list:
                     print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
+
+                print()
 
                 len_athletes = len(athletes_list)
                 indexes = list(str(i) for i in range(len_athletes))
@@ -182,6 +191,27 @@ def menu():
                     option = choice(("y","n"), "Rematch: (y/n) ")
                     if option == "n":
                         break
+            case "2":
+                clean_screen("---- Create your athlete ----")
+                options = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                           "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
+                name = input("Name: ")
 
+                attack = choice(options, "Attack: (1-20) ")
+                attack = int(attack)
 
+                defense = choice(options, "Defense: (1-20) ")
+                defense = int(defense)
+
+                serve = choice(options, "Serve: (1-20) ")
+                serve = int(serve)
+
+                athletes_list = create_athlete(name, attack, defense, serve)
+                
+                print("Athlete created, good luck!")
+
+                enter = input("Press Enter: ")
+                
+
+db.init_db() # starts the database if it not exists
 menu()
