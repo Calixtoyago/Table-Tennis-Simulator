@@ -10,8 +10,12 @@ def init_db():
     with open("db/schema.sql") as query:
         conn.executescript(query.read())
 
-    with open("db/seed.sql") as query:
-        conn.executescript(query.read())
+    try:
+        with open("db/seed.sql") as query:
+            conn.executescript(query.read())
+    except sqlite3.IntegrityError: # this error occurs when a constrains is violated in sqlite3
+                                   # this prevent errors when the database is already created
+        pass
         
     conn.commit()
     conn.close()
