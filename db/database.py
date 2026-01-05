@@ -7,11 +7,11 @@ def get_connection():
 
 def init_db():
     conn = get_connection()
-    with open("db/schema.sql") as query:
+    with open("db/schema.sql", encoding="utf-8") as query:
         conn.executescript(query.read())
 
     try:
-        with open("db/seed.sql") as query:
+        with open("db/seed.sql", encoding="utf-8") as query:
             conn.executescript(query.read())
     except sqlite3.IntegrityError: # this error occurs when a constrains is violated in sqlite3
                                    # this prevent errors when the database is already created
