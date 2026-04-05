@@ -48,26 +48,30 @@ The project is organized as follows:
 - Operating system: Windows (commands provided for CMD).
 
 ## Step-by-Step to Run the Code via CMD
-1. Open the Command Prompt (CMD) on Windows. You can do this by pressing `Win + R`, typing `cmd`, and pressing Enter.
-2. Navigate to the project folder:
+1. Clone the repository:
    ```
-   cd "c:\Users\Bárbara Calixto\OneDrive - Universidade de Vassouras\Meu PC\Meus projetos\TTM"
+   git clone https://github.com/Calixtoyago/Table-Tennis-Simulator.git
    ```
-3. Install Python dependencies:
+2. Open the Command Prompt (CMD) on Windows. You can do this by pressing `Win + R`, typing `cmd`, and pressing Enter.
+3. Navigate to the project folder:
+   ```
+   cd Table-Tennis-Simulator
+   ```
+4. Install Python dependencies:
    ```
    pip install -r requirements/requirements.txt
    ```
-4. Start MongoDB using Docker Compose (ensure Docker is running):
+5. Start MongoDB using Docker Compose (ensure Docker is running):
    ```
    docker-compose -f docker/docker-compose.yml up -d
    ```
    This will start MongoDB on port 27018 (mapped from container's 27017).
-5. Run the FastAPI application:
+6. Run the FastAPI application:
    ```
    uvicorn main:app --reload
    ```
    The server will start, typically on http://127.0.0.1:8000. You can access the API documentation at http://127.0.0.1:8000/docs (Swagger UI).
-6. (Optional) To run tests, if any are added in the future:
+7. (Optional) To run tests, if any are added in the future:
    ```
    python -m pytest tests/
    ```
