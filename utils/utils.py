@@ -1,4 +1,27 @@
 import os
+import pandas as pd
+from tabulate import tabulate
+from schemas.athlete_schema import Athlete
+
+def show_scoreboard(games: dict, j1: Athlete, j2: Athlete):
+    clean_screen("---- TABLE TENNIS SIMULATOR ----")
+
+    scoreboard = {
+        j1.name: [],
+        j2.name: []
+    }
+    columns = ["Games"]
+    for game in games.items():
+        sets, points = game
+        scoreboard[j1.name].append(points[0])
+        scoreboard[j2.name].append(points[1])
+        columns.append(str(sets))
+
+    df_scoreboard = pd.DataFrame.from_dict(scoreboard, orient="index")
+    scoreboard = tabulate(df_scoreboard, headers=columns, stralign="center", 
+                          numalign="right", tablefmt="rounded_outline")
+    print(scoreboard)
+
 
 def choice(option_list, text="Your choice: "):
     """

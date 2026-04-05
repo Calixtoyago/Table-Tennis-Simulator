@@ -1,39 +1,6 @@
-import random, time, pandas as pd, os
-from athletes import Athlete, athletes_list
-from tabulate import tabulate
-
-def choice(option_list):
-    while True:
-        option = input("Your choice: ").lower().strip()
-        if option not in (option_list):
-            print("Selecione uma opção válida!")
-        else:
-            return option
-
-def clean_screen(text): # the name is self-explanatory
-    os.system("cls" if os.name == "nt" else "clear")
-    if text:
-        print(text)
-
-def show_scoreboard(games: dict, j1: Athlete, j2: Athlete):
-    clean_screen("---- TABLE TENNIS SIMULATOR ----")
-
-    scoreboard = {
-        j1.name: [],
-        j2.name: []
-    }
-    columns = ["Sets"]
-    for game in games.items():
-        sets, points = game
-        scoreboard[j1.name].append(points[0])
-        scoreboard[j2.name].append(points[1])
-        columns.append(str(sets))
-
-    df_scoreboard = pd.DataFrame.from_dict(scoreboard, orient="index")
-    scoreboard = tabulate(df_scoreboard, headers=columns, stralign="center", 
-                          numalign="right", tablefmt="rounded_outline")
-    print(scoreboard)
-
+import random, time
+from utils.utils import *
+from schemas.athlete_schema import Athlete
 
 def service_rotation(deuce, count_to_serve, players, to_serve, to_receive):
     """
@@ -56,7 +23,8 @@ def service_rotation(deuce, count_to_serve, players, to_serve, to_receive):
 
     return to_serve, to_receive, count_to_serve
 
-def match_simulation(j1, j2):
+def match_simulation(j1: Athlete, j2: Athlete):
+    
     games = {}
 
     game_j1, game_j2 = 0, 0
@@ -75,12 +43,16 @@ def match_simulation(j1, j2):
     RANDOM_VARIATION = 8
     BASE_ERROR = 0.05
 
+    MATCH_SPEED = 0.5
+
+    points_to_six = 0
+
     while game_j1 < 3 and game_j2 < 3:
         deuce = False
         while True:
             games[game] = (points_j1, points_j2)
-            show_scoreboard(games, j1, j2)
-            time.sleep(0.4)
+            # show_scoreboard(games, j1, j2)
+            # time.sleep(MATCH_SPEED)
 
             error_chance = (10 - to_serve.serve) / 10
             ace_chance = (to_serve.serve / (to_serve.serve + to_receive.defense)) * 0.15
@@ -134,32 +106,9 @@ def match_simulation(j1, j2):
         points_j2 = 0
         game += 1
 
-    show_scoreboard(games, j1, j2)
+    # show_scoreboard(games, j1, j2)
 
-    return j1.name if game_j1 > game_j2 else j2.name
-
-def menu():
-    print("""---- TABLE TENNIS SIMULATOR ----
-[1] Sim match
-""")
-    option = choice(("1"))
-
-    if option == "1":
-        clean_screen("---- Choose your players ----")
-
-        for athlete in athletes_list:
-            print(f"{athletes_list.index(athlete)}. {athlete.name} - OVR: {athlete.overall}")
-
-        len_athletes = len(athletes_list)
-        indexes = list(str(i) for i in range(len_athletes))
-        j1 = choice(indexes)
-        indexes.remove(j1)
-        j2 = choice(indexes)
-
-        j1, j2 = int(j1), int(j2)
-        j1 = athletes_list[j1]
-        j2 = athletes_list[j2]
-
-        match_simulation(j1, j2)
-
-menu()
+    return {
+        "winner": j1.nome if game_j1 > game_j2 else j2.nome,
+        "score": games
+    }
