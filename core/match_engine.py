@@ -109,6 +109,6 @@ def match_simulation(j1: Athlete, j2: Athlete):
     # show_scoreboard(games, j1, j2)
 
     return {
-        "winner": j1.nome if game_j1 > game_j2 else j2.nome,
+        "winner": j1.name if game_j1 > game_j2 else j2.name,
         "score": games
     }
